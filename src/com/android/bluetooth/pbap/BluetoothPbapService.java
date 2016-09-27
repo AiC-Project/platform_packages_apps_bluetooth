@@ -78,7 +78,7 @@ public class BluetoothPbapService extends Service {
 
     public static final boolean DEBUG = true;
 
-    public static final boolean VERBOSE = false;
+    public static final boolean VERBOSE = true;
 
     /**
      * Intent indicating incoming obex authentication request which is from
@@ -381,6 +381,7 @@ public class BluetoothPbapService extends Service {
 
         } else {
             Log.e(TAG, "Error to create listening socket after " + CREATE_RETRY_TIME + " try");
+             /*MOCKAIC*/setState(BluetoothPbap.STATE_CONNECTED); Log.e(TAG, " -> Error to create listening socket MOCKAIC setState(BluetoothPbap.STATE_CONNECTED)" );
         }
         return initSocketOK;
     }

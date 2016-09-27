@@ -259,16 +259,17 @@ final class AdapterState extends StateMachine {
 
                     //Enable
                     boolean ret = adapterService.enableNative();
-                    if (!ret) {
-                        Log.e(TAG, "Error while turning Bluetooth On");
-                        notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
-                        transitionTo(mOffState);
-                    } else {
-                        sendMessageDelayed(ENABLE_TIMEOUT, ENABLE_TIMEOUT_DELAY);
-                    }
-                }
-                    break;
-
+/*MOCKAIC beg*/
+//                     if (!ret) {
+//                         Log.e(TAG, "Error while turning Bluetooth On");
+//                         notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+//                         transitionTo(mOffState);
+//                     } else {
+//                         sendMessageDelayed(ENABLE_TIMEOUT, ENABLE_TIMEOUT_DELAY);
+//                     }
+//                 }
+//                     break;
+/*MOCKAIC end*/ }
                 case ENABLED_READY:
                     if (DBG) Log.d(TAG,"CURRENT_STATE=PENDING, MESSAGE = ENABLE_READY, isTurningOn=" + isTurningOn + ", isTurningOff=" + isTurningOff);
                     removeMessages(ENABLE_TIMEOUT);
@@ -372,6 +373,7 @@ final class AdapterState extends StateMachine {
 
     void stateChangeCallback(int status) {
         if (status == AbstractionLayer.BT_STATE_OFF) {
+            errorLog("BT_STATE_OFF status in stateChangeCallback");
             sendMessage(DISABLED);
         } else if (status == AbstractionLayer.BT_STATE_ON) {
             // We should have got the property change for adapter and remote devices.

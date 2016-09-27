@@ -69,7 +69,7 @@ import android.os.ServiceManager;
 
 public class AdapterService extends Service {
     private static final String TAG = "BluetoothAdapterService";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     private static final boolean TRACE_REF = true;
     //For Debugging only
     private static int sRefCount=0;
@@ -211,7 +211,7 @@ public class AdapterService extends Service {
         if (isTurningOff) {
             //Process stop or disable pending
             //Check if all services are stopped if so, do cleanup
-            //if (DBG) Log.d(TAG,"Checking if all profiles are stopped...");
+            if (DBG) Log.d(TAG,"Checking if all profiles are stopped...");
             synchronized (mProfileServicesState) {
                 Iterator<Map.Entry<String,Integer>> i = mProfileServicesState.entrySet().iterator();
                 while (i.hasNext()) {
@@ -229,7 +229,7 @@ public class AdapterService extends Service {
         } else if (isTurningOn) {
             //Process start pending
             //Check if all services are started if so, update state
-            //if (DBG) Log.d(TAG,"Checking if all profiles are running...");
+            if (DBG) Log.d(TAG,"Checking if all profiles are running...");
             synchronized (mProfileServicesState) {
                 Iterator<Map.Entry<String,Integer>> i = mProfileServicesState.entrySet().iterator();
                 while (i.hasNext()) {

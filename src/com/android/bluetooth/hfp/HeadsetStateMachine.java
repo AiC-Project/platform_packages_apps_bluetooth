@@ -69,7 +69,7 @@ import java.util.Set;
 
 final class HeadsetStateMachine extends StateMachine {
     private static final String TAG = "HeadsetStateMachine";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     //For Debugging only
     private static int sRefCount=0;
 

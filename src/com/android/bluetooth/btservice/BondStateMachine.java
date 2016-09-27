@@ -44,7 +44,7 @@ import java.util.ArrayList;
  */
 
 final class BondStateMachine extends StateMachine {
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     private static final String TAG = "BluetoothBondStateMachine";
 
     static final int CREATE_BOND = 1;
@@ -115,6 +115,7 @@ final class BondStateMachine extends StateMachine {
                   break;
               case BONDING_STATE_CHANGE:
                 int newState = msg.arg1;
+                Log.e(TAG, "received newState: " + newState);
                 /* if incoming pairing, transition to pending state */
                 if (newState == BluetoothDevice.BOND_BONDING)
                 {

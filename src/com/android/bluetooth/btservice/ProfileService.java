@@ -31,7 +31,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 public abstract class ProfileService extends Service {
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     //For Debugging only
     private static HashMap<String, Integer> sReferenceCount = new HashMap<String,Integer>();
 

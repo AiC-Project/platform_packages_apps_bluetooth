@@ -40,7 +40,7 @@ import java.util.HashMap;
  */
 public class AtPhonebook {
     private static final String TAG = "BluetoothAtPhonebook";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
 
     /** The projection to use when querying the call log database in response
      *  to AT+CPBR for the MC, RC, and DC phone books (missed, received, and

@@ -66,7 +66,7 @@ public class BluetoothMapService extends ProfileService {
 
     public static final boolean DEBUG = true;
 
-    public static final boolean VERBOSE = false;
+    public static final boolean VERBOSE = true;
 
     /**
      * Intent indicating incoming obex authentication request which is from
