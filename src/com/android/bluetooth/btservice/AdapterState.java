@@ -138,6 +138,16 @@ final class AdapterState extends StateMachine {
                    if (DBG) Log.d(TAG,"CURRENT_STATE=OFF, MESSAGE = USER_TURN_OFF");
                    //TODO: Handle case of service started and stopped without enable
                    break;
+
+                case ENABLED_READY:
+                   if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
+                    removeMessages(ENABLE_TIMEOUT);
+                    adapterService.processStart();
+                    mPendingCommandState.setTurningOn(false);
+                    transitionTo(mOnState);
+                    notifyAdapterStateChange(BluetoothAdapter.STATE_ON);
+                    break;
+
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
                    return false;
@@ -185,6 +195,14 @@ final class AdapterState extends StateMachine {
                    if (DBG) Log.d(TAG,"CURRENT_STATE=ON, MESSAGE = USER_TURN_ON");
                    Log.i(TAG,"Bluetooth already ON, ignoring USER_TURN_ON");
                    break;
+
+                case DISABLED:
+                    removeMessages(ENABLE_TIMEOUT);
+                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
+                    mPendingCommandState.setTurningOn(false);
+                    transitionTo(mOffState);
+                    notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
                    return false;
@@ -259,17 +277,15 @@ final class AdapterState extends StateMachine {
 
                     //Enable
                     boolean ret = adapterService.enableNative();
-/*MOCKAIC beg*/
-//                     if (!ret) {
-//                         Log.e(TAG, "Error while turning Bluetooth On");
-//                         notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
-//                         transitionTo(mOffState);
-//                     } else {
-//                         sendMessageDelayed(ENABLE_TIMEOUT, ENABLE_TIMEOUT_DELAY);
-//                     }
-//                 }
-//                     break;
-/*MOCKAIC end*/ }
+                    if (!ret) {
+                        Log.e(TAG, "Error while turning Bluetooth On");
+                        notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+                        transitionTo(mOffState);
+                    } else {
+                        sendMessageDelayed(ENABLE_TIMEOUT, ENABLE_TIMEOUT_DELAY);
+                    }
+                }
+                    break;
                 case ENABLED_READY:
                     if (DBG) Log.d(TAG,"CURRENT_STATE=PENDING, MESSAGE = ENABLE_READY, isTurningOn=" + isTurningOn + ", isTurningOff=" + isTurningOff);
                     removeMessages(ENABLE_TIMEOUT);

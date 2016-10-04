@@ -467,7 +467,7 @@ class AdapterProperties {
                         debugLog("Scan Mode:" + mScanMode);
                         if (mBluetoothDisabling) {
                             mBluetoothDisabling=false;
-                            mService.startBluetoothDisable();
+                            //mService.startBluetoothDisable();
                         }
                         break;
                     case AbstractionLayer.BT_PROPERTY_UUIDS:
