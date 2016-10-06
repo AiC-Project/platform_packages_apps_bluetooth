@@ -131,22 +131,23 @@ final class AdapterState extends StateMachine {
                    notifyAdapterStateChange(BluetoothAdapter.STATE_TURNING_ON);
                    mPendingCommandState.setTurningOn(true);
                    transitionTo(mPendingCommandState);
-                   sendMessageDelayed(START_TIMEOUT, START_TIMEOUT_DELAY);
+                   //sendMessageDelayed(START_TIMEOUT, START_TIMEOUT_DELAY);
                    adapterService.processStart();
+                   sendMessage(STARTED);
                    break;
                case USER_TURN_OFF:
                    if (DBG) Log.d(TAG,"CURRENT_STATE=OFF, MESSAGE = USER_TURN_OFF");
                    //TODO: Handle case of service started and stopped without enable
                    break;
 
-                case ENABLED_READY:
-                   if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
-                    removeMessages(ENABLE_TIMEOUT);
-                    adapterService.processStart();
-                    mPendingCommandState.setTurningOn(false);
-                    transitionTo(mOnState);
-                    notifyAdapterStateChange(BluetoothAdapter.STATE_ON);
-                    break;
+               case ENABLED_READY:
+                   if (DBG) Log.d(TAG,"ERROR: A - UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
+                   removeMessages(ENABLE_TIMEOUT);
+                   notifyAdapterStateChange(BluetoothAdapter.STATE_ON);
+                   mPendingCommandState.setTurningOn(false);
+                   transitionTo(mOnState);
+                   sendMessage(STARTED);
+                   break;
 
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
@@ -198,10 +199,18 @@ final class AdapterState extends StateMachine {
 
                 case DISABLED:
                     removeMessages(ENABLE_TIMEOUT);
-                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
+                    if (DBG) Log.d(TAG,"ERROR: B - UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
                     mPendingCommandState.setTurningOn(false);
                     transitionTo(mOffState);
                     notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+                   break;
+
+                case STARTED:
+                   if (DBG) Log.d(TAG,"ERROR: C - UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
+                    mPendingCommandState.setTurningOn(true);
+                    transitionTo(mOnState);
+                    adapterProperties.onBluetoothReady();
+                   break;
 
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );

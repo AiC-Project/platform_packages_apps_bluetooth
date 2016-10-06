@@ -339,7 +339,7 @@ public class AdapterService extends Service {
 
     void cleanup () {
         if (DBG)debugLog("cleanup()");
-        if (mCleaningUp) {
+        if (!mCleaningUp) {
             Log.w(TAG,"*************service already starting to cleanup... Ignoring cleanup request.........");
             return;
         }
@@ -944,7 +944,7 @@ public class AdapterService extends Service {
 
         if (DBG) debugLog("disable() called...");
         Message m =
-                mAdapterStateMachine.obtainMessage(AdapterState.USER_TURN_OFF);
+                mAdapterStateMachine.obtainMessage(AdapterState.ENABLED_READY);
         mAdapterStateMachine.sendMessage(m);
         return true;
     }
