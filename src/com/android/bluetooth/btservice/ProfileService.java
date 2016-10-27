@@ -31,7 +31,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 public abstract class ProfileService extends Service {
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     private static final String TAG = "BluetoothProfileService";
 
     //For Debugging only

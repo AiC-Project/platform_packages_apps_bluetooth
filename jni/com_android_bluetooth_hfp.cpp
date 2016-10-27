@@ -459,8 +459,8 @@ static void initializeNative(JNIEnv *env, jobject object, jint max_hf_clients) {
 
     if (sBluetoothHfpInterface !=NULL) {
         ALOGW("Cleaning up Bluetooth Handsfree Interface before initializing...");
-        sBluetoothHfpInterface->cleanup();
-        sBluetoothHfpInterface = NULL;
+        //sBluetoothHfpInterface->cleanup();
+        //sBluetoothHfpInterface = NULL;
     }
 
     if (mCallbacksObj != NULL) {

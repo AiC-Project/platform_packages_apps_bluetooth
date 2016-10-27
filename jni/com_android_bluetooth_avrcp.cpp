@@ -190,7 +190,7 @@ static void initNative(JNIEnv *env, jobject object) {
 
     if (sBluetoothAvrcpInterface !=NULL) {
          ALOGW("Cleaning up Avrcp Interface before initializing...");
-         sBluetoothAvrcpInterface->cleanup();
+         //sBluetoothAvrcpInterface->cleanup();
          sBluetoothAvrcpInterface = NULL;
     }
 

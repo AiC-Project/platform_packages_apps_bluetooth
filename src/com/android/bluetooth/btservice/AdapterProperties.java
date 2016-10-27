@@ -517,7 +517,7 @@ class AdapterProperties {
                         debugLog("Scan Mode:" + mScanMode);
                         if (mBluetoothDisabling) {
                             mBluetoothDisabling=false;
-                            mService.startBluetoothDisable();
+                            //mService.startBluetoothDisable();
                         }
                         break;
                     case AbstractionLayer.BT_PROPERTY_UUIDS:
@@ -579,8 +579,8 @@ class AdapterProperties {
         // When BT is being turned on, all adapter properties will be sent in 1
         // callback. At this stage, set the scan mode.
         synchronized (mObject) {
-            if (getState() == BluetoothAdapter.STATE_TURNING_ON &&
-                    mScanMode == BluetoothAdapter.SCAN_MODE_NONE) {
+            /*if (getState() == BluetoothAdapter.STATE_TURNING_ON &&
+                    mScanMode == BluetoothAdapter.SCAN_MODE_NONE)*/ {
                     /* mDiscoverableTimeout is part of the
                        adapterPropertyChangedCallback received before
                        onBluetoothReady */

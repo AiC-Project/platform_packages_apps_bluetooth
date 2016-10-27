@@ -60,11 +60,11 @@ final class AdapterState extends StateMachine {
     static final int USER_TURN_OFF_DELAY_MS=500;
 
     //TODO: tune me
-    private static final int ENABLE_TIMEOUT_DELAY = 8000;
-    private static final int DISABLE_TIMEOUT_DELAY = 8000;
-    private static final int START_TIMEOUT_DELAY = 5000;
-    private static final int STOP_TIMEOUT_DELAY = 5000;
-    private static final int PROPERTY_OP_DELAY =2000;
+    private static final int ENABLE_TIMEOUT_DELAY = 80000;
+    private static final int DISABLE_TIMEOUT_DELAY = 80000;
+    private static final int START_TIMEOUT_DELAY = 50000;
+    private static final int STOP_TIMEOUT_DELAY = 50000;
+    private static final int PROPERTY_OP_DELAY =20000;
     private AdapterService mAdapterService;
     private AdapterProperties mAdapterProperties;
     private PendingCommandState mPendingCommandState = new PendingCommandState();
@@ -133,11 +133,22 @@ final class AdapterState extends StateMachine {
                    transitionTo(mPendingCommandState);
                    sendMessageDelayed(START_TIMEOUT, START_TIMEOUT_DELAY);
                    adapterService.processStart();
+                   sendMessage(STARTED);
                    break;
                case USER_TURN_OFF:
                    if (DBG) Log.d(TAG,"CURRENT_STATE=OFF, MESSAGE = USER_TURN_OFF");
                    //TODO: Handle case of service started and stopped without enable
                    break;
+
+               case ENABLED_READY:
+                   if (DBG) Log.d(TAG,"ERROR: A - UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
+                   removeMessages(ENABLE_TIMEOUT);
+                   notifyAdapterStateChange(BluetoothAdapter.STATE_ON);
+                   mPendingCommandState.setTurningOn(false);
+                   transitionTo(mOnState);
+                   sendMessage(STARTED);
+                   break;
+
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=OFF, MESSAGE = " + msg.what );
                    return false;
@@ -185,6 +196,22 @@ final class AdapterState extends StateMachine {
                    if (DBG) Log.d(TAG,"CURRENT_STATE=ON, MESSAGE = USER_TURN_ON");
                    Log.i(TAG,"Bluetooth already ON, ignoring USER_TURN_ON");
                    break;
+
+                case DISABLED:
+                    removeMessages(ENABLE_TIMEOUT);
+                    if (DBG) Log.d(TAG,"ERROR: B - UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
+                    mPendingCommandState.setTurningOn(false);
+                    transitionTo(mOffState);
+                    notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+                   break;
+
+                case STARTED:
+                   if (DBG) Log.d(TAG,"ERROR: C - UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
+                    mPendingCommandState.setTurningOn(true);
+                    transitionTo(mOnState);
+                    adapterProperties.onBluetoothReady();
+                   break;
+
                default:
                    if (DBG) Log.d(TAG,"ERROR: UNEXPECTED MESSAGE: CURRENT_STATE=ON, MESSAGE = " + msg.what );
                    return false;
@@ -268,7 +295,6 @@ final class AdapterState extends StateMachine {
                     }
                 }
                     break;
-
                 case ENABLED_READY:
                     if (DBG) Log.d(TAG,"CURRENT_STATE=PENDING, MESSAGE = ENABLE_READY, isTurningOn=" + isTurningOn + ", isTurningOff=" + isTurningOff);
                     removeMessages(ENABLE_TIMEOUT);
@@ -330,9 +356,11 @@ final class AdapterState extends StateMachine {
                 case ENABLE_TIMEOUT:
                     if (DBG) Log.d(TAG,"CURRENT_STATE=PENDING, MESSAGE = ENABLE_TIMEOUT, isTurningOn=" + isTurningOn + ", isTurningOff=" + isTurningOff);
                     errorLog("Error enabling Bluetooth");
+                    removeMessages(ENABLE_TIMEOUT);
+                    adapterProperties.onBluetoothReady();
                     mPendingCommandState.setTurningOn(false);
-                    transitionTo(mOffState);
-                    notifyAdapterStateChange(BluetoothAdapter.STATE_OFF);
+                    transitionTo(mOnState);
+                    notifyAdapterStateChange(BluetoothAdapter.STATE_ON);
                     break;
                 case STOP_TIMEOUT:
                     if (DBG) Log.d(TAG,"CURRENT_STATE=PENDING, MESSAGE = STOP_TIMEOUT, isTurningOn=" + isTurningOn + ", isTurningOff=" + isTurningOff);
@@ -372,6 +400,7 @@ final class AdapterState extends StateMachine {
 
     void stateChangeCallback(int status) {
         if (status == AbstractionLayer.BT_STATE_OFF) {
+            errorLog("BT_STATE_OFF status in stateChangeCallback");
             sendMessage(DISABLED);
         } else if (status == AbstractionLayer.BT_STATE_ON) {
             // We should have got the property change for adapter and remote devices.

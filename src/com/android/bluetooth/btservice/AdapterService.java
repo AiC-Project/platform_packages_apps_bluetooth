@@ -80,7 +80,7 @@ import android.os.ServiceManager;
 
 public class AdapterService extends Service {
     private static final String TAG = "BluetoothAdapterService";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     private static final boolean TRACE_REF = true;
     private static final int MIN_ADVT_INSTANCES_FOR_MA = 5;
     private static final int MIN_OFFLOADED_FILTERS = 10;
@@ -436,8 +436,8 @@ public class AdapterService extends Service {
 
     void cleanup () {
         debugLog("cleanup()");
-        if (mCleaningUp) {
-            errorLog("cleanup() - Service already starting to cleanup, ignoring request...");
+        if (!mCleaningUp) {
+            Log.w(TAG,"*************service already starting to cleanup... Ignoring cleanup request.........");
             return;
         }
 
@@ -1195,7 +1195,7 @@ public class AdapterService extends Service {
 
         debugLog("disable() called...");
         Message m =
-                mAdapterStateMachine.obtainMessage(AdapterState.USER_TURN_OFF);
+                mAdapterStateMachine.obtainMessage(AdapterState.ENABLED_READY);
         mAdapterStateMachine.sendMessage(m);
         return true;
     }
@@ -1327,8 +1327,8 @@ public class AdapterService extends Service {
          }
          if (isQuietModeEnabled() == false) {
              debugLog( "autoConnect() - Initiate auto connection on BT on...");
-             autoConnectHeadset();
-             autoConnectA2dp();
+             //autoConnectHeadset();
+             //autoConnectA2dp();
          }
          else {
              debugLog( "autoConnect() - BT is in quiet mode. Not initiating auto connections");

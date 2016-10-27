@@ -411,6 +411,7 @@ public class BluetoothPbapService extends Service {
 
         } else {
             Log.e(TAG, "Error to create listening socket after " + CREATE_RETRY_TIME + " try");
+             /*MOCKAIC*/setState(BluetoothPbap.STATE_CONNECTED); Log.e(TAG, " -> Error to create listening socket MOCKAIC setState(BluetoothPbap.STATE_CONNECTED)" );
         }
         return initSocketOK;
     }
