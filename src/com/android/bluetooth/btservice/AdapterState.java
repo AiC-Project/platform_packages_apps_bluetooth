@@ -60,11 +60,11 @@ final class AdapterState extends StateMachine {
     static final int USER_TURN_OFF_DELAY_MS=500;
 
     //TODO: tune me
-    private static final int ENABLE_TIMEOUT_DELAY = 80000;
-    private static final int DISABLE_TIMEOUT_DELAY = 80000;
-    private static final int START_TIMEOUT_DELAY = 50000;
-    private static final int STOP_TIMEOUT_DELAY = 50000;
-    private static final int PROPERTY_OP_DELAY =20000;
+    private static final int ENABLE_TIMEOUT_DELAY = 8000;
+    private static final int DISABLE_TIMEOUT_DELAY = 8000;
+    private static final int START_TIMEOUT_DELAY = 5000;
+    private static final int STOP_TIMEOUT_DELAY = 5000;
+    private static final int PROPERTY_OP_DELAY =2000;
     private AdapterService mAdapterService;
     private AdapterProperties mAdapterProperties;
     private PendingCommandState mPendingCommandState = new PendingCommandState();
